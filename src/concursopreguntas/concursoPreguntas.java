@@ -1,9 +1,11 @@
 package concursopreguntas;
 
 import concursopreguntas.entidades.Categoria;
+import concursopreguntas.entidades.Jugador;
 import concursopreguntas.entidades.Pregunta;
 import concursopreguntas.entidades.Respuesta;
 import concursopreguntas.entidades.Ronda;
+import db.DB;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -14,6 +16,7 @@ import java.util.Scanner;
 public class concursoPreguntas {
 
     public static void main(String[] args) {
+        DB conn = new DB();
 
         construirConcurso consConsurso = new construirConcurso();
         consConsurso.agregarPregunta(new Pregunta("¿Cuánto es 10 + 15?", Arrays.asList(
@@ -172,29 +175,43 @@ public class concursoPreguntas {
         ), new Categoria(5, "Inglés"), 5));
 
         Ronda ronda = new Ronda(1);
-        System.out.println("\n1. Jugar. \n2. Instrucciones. \n3. Histórico. \n4. Salir.");
-        System.out.println("Elige: ");
-        Scanner sc = new Scanner(System.in);
-        int op = Integer.parseInt(sc.nextLine());
-        switch (op) {
-            case 1:
-                while (ronda.getRonda() != 0) {
-                    consConsurso.preguntar(ronda);
-                }
-                op = 0;
-                break;
-            case 2:
-                System.out.println("\nReglas: \n- Si respondes una pregunta mal, perderás automáticamente. \n- Podrás retirarte en el momento que quieras con el puntaje acumulado que lleves.");
-                op = 0;
-                break;
+        do {
+            System.out.println("\n¡¡CONCURSO DE PREGUNTAS!! \n1. Jugar. \n2. Instrucciones. \n3. Historial de partidas. \n4. Salir.");
+            System.out.println("Elige: ");
+            Scanner sc = new Scanner(System.in);
+            try {
+                int op = Integer.parseInt(sc.nextLine());
+                switch (op) {
+                    case 1:
+                        Jugador nuevoJugador = new Jugador();
+                        do {
+                            System.out.println("\n¿Cuál es tu nombre?");
+                            System.out.println("Respuesta: ");
+                            Scanner sca = new Scanner(System.in);
+                            nuevoJugador.setNombre(sca.nextLine());
+                        } while ("".equals(nuevoJugador.getNombre()));
+                        while (ronda.getRonda() != 0) {
+                            consConsurso.preguntar(ronda, nuevoJugador);
+                        }
+                        op = 0;
+                        break;
+                    case 2:
+                        System.out.println("\nReglas: \n- Si respondes una pregunta mal, perderás automáticamente. \n- Podrás retirarte en el momento que quieras con el puntaje acumulado que lleves.");
+                        op = 0;
+                        break;
 
-            case 3:
-                System.out.println("\nConsultando...");
-                op = 0;
-                break;
-            case 4:
-                ronda.setRonda(0);
-                break;
-        }
+                    case 3:
+                        System.out.println("\nConsultando...");
+                        conn.Find();
+                        op = 0;
+                        break;
+                    case 4:
+                        ronda.setRonda(0);
+                        break;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Debes elegir una opción...");
+            }
+        } while (ronda.getRonda() != 0);
     }
 }

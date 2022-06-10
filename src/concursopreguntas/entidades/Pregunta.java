@@ -15,7 +15,7 @@ public class Pregunta {
     private Categoria categoria;
     private int nivel;
 
-    private static final String letras = "abcd";
+    private static final String letras = "1234";
 
     public Pregunta(String enunciado, List<Respuesta> respuestas, Categoria categoria, int nivel) {
         this.enunciado = enunciado;
@@ -70,17 +70,22 @@ public class Pregunta {
     }
 
     public boolean preguntar(int numero) {
-        System.out.println("\nCategoría: " + this.categoria.getDescripcion() + "\nNivel: " + this.getNivel());
-//        System.out.println(numero + 1);
-        System.out.println(this.categoria.getCategoria() + ". " + this.enunciado);
-        int index = 0;
-        for (Respuesta rs : this.respuestas) {
-            System.out.printf("%c) %s\n", letras.charAt(index), rs.getRespuesta());
-            index++;
+        char respuesta = 0;
+        try {
+            System.out.println("\nCategoría: " + this.categoria.getDescripcion() + "\nNivel: " + this.getNivel());
+            System.out.println(this.categoria.getCategoria() + ". " + this.enunciado);
+            int index = 0;
+            for (Respuesta rs : this.respuestas) {
+                System.out.printf("%c) %s\n", letras.charAt(index), rs.getRespuesta());
+                index++;
+            }
+            System.out.println("Elige: ");
+            Scanner sc = new Scanner(System.in);
+            respuesta = sc.nextLine().charAt(0);
+            return this.respuestaCorrecta(respuesta);
+        } catch (StringIndexOutOfBoundsException e) {
+            System.out.println("Debes elegir una opción de respuesta...");
         }
-        System.out.println("Elige: ");
-        Scanner sc = new Scanner(System.in);
-        char respuesta = sc.nextLine().charAt(0);
-        return this.respuestaCorrecta(respuesta);
+        return preguntar(numero);
     }
 }

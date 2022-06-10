@@ -9,8 +9,7 @@ public class Jugador {
     private String nombre;
     private int puntajeTotal;
 
-    public Jugador(String nombre) {
-        this.nombre = nombre;
+    public Jugador() {
     }
 
     public String getNombre() {
